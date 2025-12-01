@@ -1,82 +1,108 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GaRaV Galaxy — Вечные искры любви</title>
-  <style>
-    body{margin:0;background:#0a001f;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
-    canvas{position:fixed;top:0;left:0;z-index:-1}
-    .container{max-width:900px;margin:0 auto;padding:20px;text-align:center}
-    h1{font-size:2.5em;margin:20px 0}
-    .toggle{position:absolute;top:20px;right:20px;background:#ff1493;padding:10px 20px;border-radius:25px;cursor:pointer}
-    .btn{background:#ff1493;color:white;padding:15px 30px;border:none;border-radius:50px;margin:20px;font-size:1.2em;cursor:pointer}
-    .spark{color:#ff69b4;font-size:1.4em;text-shadow:0 0 10px #ff1493}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaRaV Galaxy • Вечные искры любви</title>
+    <style>
+        body, html { margin:0; padding:0; height:100%; background:#000; overflow:hidden; color:#fff; font-family:Arial, sans-serif; }
+        canvas { position:fixed; top:0; left:0; }
+        #counter { position:fixed; top:20px; right:20px; font-size:28px; z-index:10; background:rgba(0,0,0,0.5); padding:8px 15px; border-radius:8px; }
+        #title { position:fixed; top:20px; left:20px; font-size:22px; z-index:10; background:rgba(0,0,0,0.5); padding:8px 15px; border-radius:8px; }
+        #sparkBtn { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); padding:16px 36px; background:#ff1493; border:none; border-radius:50px; color:white; font-size:21px; cursor:pointer; z-index:10; box-shadow:0 0 30px rgba(255,20,147,0.6); transition:0.3s; }
+        #sparkBtn:hover { transform:translateX(-50%) scale(1.08); background:#ff45b3; }
+        #form { position:fixed; bottom:120px; left:50%; transform:translateX(-50%); background:rgba(20,20,40,0.98); padding:30px; border-radius:20px; z-index:20; display:none; min-width:340px; text-align:center; box-shadow:0 0 40px rgba(255,20,147,0.5); }
+        input { width:300px; padding:14px; margin:10px 0; border-radius:12px; border:none; font-size:17px; }
+        .btn { padding:14px 30px; margin:10px; border:none; border-radius:12px; cursor:pointer; font-size:18px; font-weight:bold; }
+        .ok { background:#00ff9d; color:#000; }
+        .cancel { background:#555; color:#fff; }
+        #manifest { position:fixed; bottom:10px; left:0; right:0; text-align:center; font-size:13px; opacity:0.75; line-height:1.6; }
+    </style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
-  <div class="container">
-    <div class="toggle" onclick="document.documentElement.lang='en';location.reload()">ENG</div>
-    <h1>GaRaV Galaxy • Вечные искры любви</h1>
-    <p>Sparks: <span id="count">0</span></p>
-    <button class="btn" onclick="openModal()">Зажечь вечную Искру ♥</button>
-  </div>
 
-  <!-- Модальное окно -->
-  <div id="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99">
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a0033;padding:30px;border-radius:20px;max-width:400px;width:90%">
-      <h2>Выбери свою искру</h2>
-      <select id="price">
-        <option value="0">Бесплатно (белая)</option>
-        <option value="9">$9 — Розовая искра</option>
-        <option value="49">$49 — Золотая искра</option>
-      </select><br><br>
-      <input type="text" id="from" placeholder="Твоё имя или Anonymous" style="width:100%;padding:12px;margin:10px 0;border-radius:10px"><br>
-      <input type="text" id="to" placeholder="Для кого" style="width:100%;padding:12px;margin:10px 0;border-radius:10px"><br>
-      <textarea id="msg" placeholder="Короткое сообщение (только Love & Eternal)" style="width:100%;height:80px;padding:12px;margin:10px 0;border-radius:10px"></textarea><br>
-      <button onclick="lightFree()" style="background:#888;padding:15px;margin:5px;width:45%">Light for free</button>
-      <button onclick="lightPaid(9)" style="background:#ff1493;padding:15px;margin:5px;width:45%">Pay $9</button><br>
-      <button onclick="lightPaid(49)" style="background:#ffD700;color:#000;padding:15px;margin:5px;width:45%">Pay $49</button>
-      <button onclick="closeModal()" style="background:#555;padding:15px;margin:5px;width:45%">Cancel</button>
-    </div>
-  </div>
+<canvas id="canvas"></canvas>
 
-  <script src="https://www.paypal.com/sdk/js?client-id=AcyW2Xb8l5f7e8Yd9kR3vN4mP7qT2sJ9xZ5cV8bN1kL3mQ9wX2tY6rS4pO8iU7yT5eR3wA2zX9vC&currency=USD"></script>
-  <script>
-    const API_USER = "flotpetr777_api1.gmail.com";
-    const API_PASS = "R62XE35NF42P56ZC";
-    const SIGNATURE = "AR6jFZ-x9qrVRwbk5sa6I.SAgPKdA9o.NN8dqdMD-E4-k47iorrp4PaYS";
+<div id="title">GaRaV Galaxy • Вечные искры любви</div>
+<div id="counter">Искр: 0</div>
 
-    // тут остальной код галактики (звёздное небо, сохранение в localStorage, анимация) — я оставил без изменений, он уже работает
-    // главное — платежи теперь идут через твои ключи
+<button id="sparkBtn">Зажечь Искру за того, кого люблю ❤️</button>
 
-    function lightPaid(amount) {
-      const from = document.getElementById('from').value || 'Anonymous';
-      const to = document.getElementById('to').value || 'someone eternal';
-      fetch('https://api-m.paypal.com/v1/payments/payment', { // упрощённый вызов, работает через твои NVP/SOAP ключи
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          METHOD: 'DoExpressCheckoutPayment',
-          VERSION: '204',
-          USER: API_USER,
-          PWD: API_PASS,
-          SIGNATURE: SIGNATURE,
-          PAYMENTREQUEST_0_AMT: amount,
-          PAYMENTREQUEST_0_CURRENCYCODE: 'USD',
-          PAYMENTREQUEST_0_DESC: 'GaRaV Galaxy Spark',
-          RETURNURL: location.href,
-          CANCELURL: location.href
-        })
-      }).then(() => {
-        addSpark(from, to, amount === 49 ? '#ffd700' : '#ff69b4');
-        closeModal();
-      });
+<div id="form">
+    <h3>Зажги вечную Искру</h3>
+    <input type="text" id="from" placeholder="Твоё имя (или Аноним)">
+    <input type="text" id="for" placeholder="За кого (имя любимого человека или мира)">
+    <br><br>
+    <button class="btn ok" onclick="addSpark()">Зажечь навсегда!</button>
+    <button class="btn cancel" onclick="closeForm()">Отмена</button>
+</div>
+
+<div id="manifest">
+    GaRaV — Галактика Разума Вселенной.<br>
+    Не убивать • Не обманывать • Не воровать.<br>
+    Земной он или инопланетный — разум всегда брат.
+</div>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let sparks = JSON.parse(localStorage.getItem('garavSparks') || '[]');
+    let counter = sparks.length;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        sparks.forEach(s => {
+            const size = 4 + Math.sin(Date.now() * 0.005 + s.x) * 1.5;
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, size, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.textAlign = 'center';
+            ctx.fillText(`от ${s.from} → для ${s.for}`, s.x, s.y + 20);
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    document.getElementById('sparkBtn').onclick = () => document.getElementById('form').style.display = 'block';
+
+    function closeForm() {
+        document.getElementById('form').style.display = 'none';
     }
 
-    // остальной код (звёзды, бесплатные искры и т.д.) — без изменений
-    // если нужно — я пришлю полную версию в следующем сообщении
-  </script>
+    function addSpark() {
+        const from = document.getElementById('from').value.trim() || 'Аноним';
+        const forWhom = document.getElementById('for').value.trim() || 'человечества';
+        const x = Math.random() * (canvas.width - 100) + 50;
+        const y = Math.random() * (canvas.height - 100) + 50;
+
+        sparks.push({ x, y, from, for: forWhom });
+        localStorage.setItem('garavSparks', JSON.stringify(sparks));
+        counter = sparks.length;
+        document.getElementById('counter').textContent = `Искр: ${counter}`;
+        closeForm();
+        document.getElementById('from').value = '';
+        document.getElementById('for').value = '';
+    }
+
+    // Первая искра от тебя, если база пуста
+    if (counter === 0) {
+        sparks = [{ x: canvas.width / 2, y: canvas.height / 2, from: 'Пётр', for: 'моей любимой жены ❤️' }];
+        localStorage.setItem('garavSparks', JSON.stringify(sparks));
+        counter = 1;
+        document.getElementById('counter').textContent = 'Искр: 1';
+    }
+</script>
 </body>
 </html>
